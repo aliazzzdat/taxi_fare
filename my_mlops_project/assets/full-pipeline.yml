@@ -6,7 +6,7 @@ common_permissions: &permissions
 resources:
   jobs:
     full_pipeline:
-      name: full_pipeline
+      name: ${bundle.target}-my-mlops-project-full-pipeline
       tasks:
         - task_key: Feature
           run_job_task:
