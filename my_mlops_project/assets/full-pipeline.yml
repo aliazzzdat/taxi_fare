@@ -1,0 +1,29 @@
+common_permissions: &permissions
+  permissions:
+    - level: CAN_VIEW
+      group_name: users
+      
+resources:
+  jobs:
+    full_pipeline:
+      name: full_pipeline
+      tasks:
+        - task_key: Feature
+          run_job_task:
+            job_id: 915447930542438
+        - task_key: Training
+          depends_on:
+            - task_key: Feature
+          run_job_task:
+            job_id: 141030420957046
+        - task_key: Inference
+          depends_on:
+            - task_key: Training
+          run_job_task:
+            job_id: 546212020561245
+        - task_key: monitoring
+          depends_on:
+            - task_key: Inference
+          run_if: ALL_DONE
+          run_job_task:
+            job_id: 448761872798995

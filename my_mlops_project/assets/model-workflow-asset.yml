@@ -1,10 +1,10 @@
-new_cluster: &new_cluster
-  new_cluster:
-    num_workers: 3
-    spark_version: 13.3.x-cpu-ml-scala2.12
-    node_type_id: i3.xlarge
-    custom_tags:
-      clusterSource: mlops-stack/0.2
+#new_cluster: &new_cluster
+#  new_cluster:
+#    num_workers: 3
+#    spark_version: 13.3.x-cpu-ml-scala2.12
+#    node_type_id: i3.xlarge
+#    custom_tags:
+#      clusterSource: mlops-stack/0.2
 
 common_permissions: &permissions
   permissions:
@@ -15,12 +15,13 @@ resources:
   jobs:
     model_training_job:
       name: ${bundle.target}-my-mlops-project-model-training-job
-      job_clusters:
-        - job_cluster_key: model_training_job_cluster
-          existing_cluster_id: ${var.cluster_id} #<<: *new_cluster
+      #job_clusters:
+      #  - job_cluster_key: model_training_job_cluster
+      #    existing_cluster_id: ${var.cluster_id} #<<: *new_cluster
       tasks:
         - task_key: Train
-          job_cluster_key: model_training_job_cluster
+          #job_cluster_key: model_training_job_cluster
+          existing_cluster_id: ${var.cluster_id} #<<: *new_cluster
           notebook_task:
             notebook_path: ../training/notebooks/TrainWithFeatureStore.py
             base_parameters:
@@ -39,7 +40,8 @@ resources:
               # git source information of current ML asset deployment. It will be persisted as part of the workflow run
               git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
         - task_key: ModelValidation
-          job_cluster_key: model_training_job_cluster
+          #job_cluster_key: model_training_job_cluster
+          existing_cluster_id: ${var.cluster_id} #<<: *new_cluster
           depends_on:
             - task_key: Train
           notebook_task:
@@ -82,7 +84,8 @@ resources:
               # git source information of current ML asset deployment. It will be persisted as part of the workflow run
               git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
         - task_key: ModelDeployment
-          job_cluster_key: model_training_job_cluster
+          #job_cluster_key: model_training_job_cluster
+          existing_cluster_id: ${var.cluster_id} #<<: *new_cluster
           depends_on:
             - task_key: ModelValidation
           notebook_task:

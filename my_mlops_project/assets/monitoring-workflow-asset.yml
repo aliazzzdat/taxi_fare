@@ -1,11 +1,11 @@
 # TODO: Add data monitoring support for mlops
-new_cluster: &new_cluster
-  new_cluster:
-    num_workers: 3
-    spark_version: 13.3.x-cpu-ml-scala2.12
-    node_type_id: i3.xlarge
-    custom_tags:
-      clusterSource: mlops-stack/0.2
+#new_cluster: &new_cluster
+#  new_cluster:
+#    num_workers: 3
+#    spark_version: 13.3.x-cpu-ml-scala2.12
+#    node_type_id: i3.xlarge
+#    custom_tags:
+#      clusterSource: mlops-stack/0.2
 
 common_permissions: &permissions
   permissions:
