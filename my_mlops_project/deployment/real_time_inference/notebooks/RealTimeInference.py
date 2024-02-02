@@ -11,7 +11,7 @@
 # Name of the current environment
 dbutils.widgets.dropdown("env", "dev", ["dev", "staging", "prod"], "Environment Name")
 # Delta table to store the output predictions.
-dbutils.widgets.text("output_table_name", "", label="Output Table Name")
+dbutils.widgets.text("output_table_name", "ali_azzouz.mlops_dev.real_time_inference_logs", label="Output Table Name")
 # Unity Catalog registered model name to use for the trained mode.
 dbutils.widgets.text(
     "model_name", "ali_azzouz.mlops_dev.my-mlops-project-model", label="Full (Three-Level) Model Name"
