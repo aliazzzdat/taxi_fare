@@ -13,10 +13,13 @@ dbutils.widgets.text(
     label="Drifted Inference Table",
 )
 
+# COMMAND ----------
+
 import pyspark.sql.functions as F
 
 inference_table_todrift = dbutils.widgets.get("inference_table_todrift")
 inference_table_drifted = dbutils.widgets.get("inference_table_drifted")
+
 table = spark.table(inference_table_todrift)
 
 # COMMAND ----------
@@ -29,4 +32,5 @@ drifted_table = drifted_table.withColumn("dropoff_zip",F.col("dropoff_zip").cast
 
 # COMMAND ----------
 
+spark.sql(f"DROP TABLE IF EXISTS {inference_table_drifted}") 
 drifted_table.write.format("delta").mode("overwrite").saveAsTable(inference_table_drifted) 

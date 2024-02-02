@@ -82,11 +82,24 @@ start_endpoint_json_body = {
     },
 }
 
+import mlflow
+import requests
+import time 
 host_creds = mlflow.utils.databricks_utils.get_databricks_host_creds()
 headers = {
   "Authorization": f"Bearer {host_creds.token}",
   "Content-Type": "application/json"
 }
+
+try:
+    requests.request(
+    method="DELETE", 
+    headers=headers, 
+    url=f"{host_creds.host}/api/2.0/preview/serving-endpoints/{endpoint_name}" 
+    )
+    print('Endpoint deleted')
+except :
+    print('No endpoint has been deleted')
 
 response = requests.request(
     url=f"{host_creds.host}/api/2.0/serving-endpoints",

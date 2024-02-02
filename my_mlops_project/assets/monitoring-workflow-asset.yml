@@ -58,12 +58,12 @@ resources:
               model_name: ${var.catalog_name}.${var.schema_name}${bundle.target}.${var.model_name}
               # git source information of current ML asset deployment. It will be persisted as part of the workflow run
               git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
-        - task_key: update_monitoring
+        - task_key: refresh_monitor
           depends_on:
             - task_key: inference_with_drift
           <<: *new_cluster
           notebook_task:
-            notebook_path: ../monitoring/notebooks/MonitoringUpdate.py
+            notebook_path: ../monitoring/notebooks/RefreshMonitor.py
             base_parameters:
               env: ${bundle.target}
               inference_table_name: ${var.catalog_name}.${var.schema_name}${bundle.target}.inference_logs

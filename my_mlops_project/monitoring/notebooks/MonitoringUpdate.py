@@ -102,10 +102,10 @@ import databricks.lakehouse_monitoring as lm
 # COMMAND ----------
 
 # DBTITLE 1,Update monitor
-lm.update_monitor(
-  table_name=TABLE_NAME,
-  #updated_params={"custom_metrics" : CUSTOM_METRICS}
-)
+#lm.update_monitor(
+#  table_name=TABLE_NAME,
+#  updated_params={"custom_metrics" : CUSTOM_METRICS}
+#)
 
 # COMMAND ----------
 
@@ -114,12 +114,12 @@ lm.update_monitor(
 
 # COMMAND ----------
 
-run_info = lm.run_refresh(table_name=TABLE_NAME)
-while run_info.state in (lm.RefreshState.PENDING, lm.RefreshState.RUNNING):
-  run_info = lm.get_refresh(table_name=TABLE_NAME, refresh_id=run_info.refresh_id)
-  time.sleep(30)
+#run_info = lm.run_refresh(table_name=TABLE_NAME)
+#while run_info.state in (lm.RefreshState.PENDING, lm.RefreshState.RUNNING):
+#  run_info = lm.get_refresh(table_name=TABLE_NAME, refresh_id=run_info.refresh_id)
+#  time.sleep(30)
 
-assert(run_info.state == lm.RefreshState.SUCCESS)
+#assert(run_info.state == lm.RefreshState.SUCCESS)
 
 # COMMAND ----------
 

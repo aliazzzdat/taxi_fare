@@ -193,6 +193,7 @@ def get_latest_model_version(model_name):
 
 taxi_data = rounded_taxi_data(raw_data)
 raw_data_table = dbutils.widgets.get("raw_data_table")
+spark.sql(f"DROP TABLE IF EXISTS {raw_data_table}") 
 taxi_data.write.format("delta").mode("overwrite").saveAsTable(raw_data_table)
 taxi_data.display()
 
@@ -249,11 +250,16 @@ inference_table = dbutils.widgets.get("inference_table")
 #TO DO subsample baseline + inference (scoring1 & scoring2)
 training_df, baseline_df, inference_df = taxi_data.randomSplit(weights=[0.6, 0.2, 0.2], seed=42)
 
+spark.sql(f"DROP TABLE IF EXISTS {training_table}") 
+spark.sql(f"DROP TABLE IF EXISTS {baseline_table}") 
 training_df.write.format("delta").mode("overwrite").saveAsTable(training_table) 
 baseline_df.write.format("delta").mode("overwrite").saveAsTable(baseline_table) 
 #inference_df.write.format("delta").mode("overwrite").saveAsTable(f"{inference_table}_all") 
 
 scoring_df1, scoring_df2 = inference_df.randomSplit(weights=[0.5, 0.5], seed=42)
+
+spark.sql(f"DROP TABLE IF EXISTS {inference_table}") 
+spark.sql(f"DROP TABLE IF EXISTS {inference_table}_todrift") 
 scoring_df1.write.format("delta").mode("overwrite").saveAsTable(f"{inference_table}") 
 scoring_df2.write.format("delta").mode("overwrite").saveAsTable(f"{inference_table}_todrift") 
 
