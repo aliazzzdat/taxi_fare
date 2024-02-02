@@ -119,6 +119,11 @@ from databricks import feature_store
 
 fs = feature_store.FeatureStoreClient()
 
+try : 
+    fs.drop_table(output_table_name)
+    print("Drop Feature Table if exist")
+except:
+    print("Feature table doesn't already exist")
 
 # Create the feature table if it does not exist first.
 # Note that this is a no-op if a table with the same name and schema already exists.
