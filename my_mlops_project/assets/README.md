@@ -146,7 +146,7 @@ resources:
       name: ${bundle.target}-my-mlops-project-batch-inference-job
       tasks:
         - task_key: batch_inference_job
-          <<: *new_cluster
+          existing_cluster_id: ${var.cluster_id} #<<: *new_cluster
           notebook_task:
             notebook_path: ../deployment/batch_inference/notebooks/BatchInference.py
             base_parameters:
@@ -201,7 +201,7 @@ resources:
       name: ${bundle.target}-my-mlops-project-batch-inference-job
       tasks:
         - task_key: batch_inference_job
-          <<: *new_cluster
+          existing_cluster_id: ${var.cluster_id} #<<: *new_cluster
           notebook_task:
             notebook_path: ../deployment/batch_inference/notebooks/BatchInference.py
             base_parameters:

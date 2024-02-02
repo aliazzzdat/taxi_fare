@@ -18,7 +18,7 @@ resources:
       name: ${bundle.target}-my-mlops-project-monitoring-job
       tasks:
         - task_key: create_monitoring
-          <<: *new_cluster
+          existing_cluster_id: ${var.cluster_id} #<<: *new_cluster
           notebook_task:
             notebook_path: ../monitoring/notebooks/MonitoringCreation.py
             base_parameters:
@@ -36,7 +36,7 @@ resources:
         - task_key: simulate_drift
           depends_on:
             - task_key: create_monitoring
-          <<: *new_cluster
+          existing_cluster_id: ${var.cluster_id} #<<: *new_cluster
           notebook_task:
             notebook_path: ../monitoring/notebooks/SimulateDrift.py
             base_parameters:
@@ -48,7 +48,7 @@ resources:
         - task_key: inference_with_drift
           depends_on:
             - task_key: simulate_drift
-          <<: *new_cluster
+          existing_cluster_id: ${var.cluster_id} #<<: *new_cluster
           notebook_task:
             notebook_path: ../deployment/batch_inference/notebooks/BatchInference.py
             base_parameters:
@@ -61,7 +61,7 @@ resources:
         - task_key: refresh_monitor
           depends_on:
             - task_key: inference_with_drift
-          <<: *new_cluster
+          existing_cluster_id: ${var.cluster_id} #<<: *new_cluster
           notebook_task:
             notebook_path: ../monitoring/notebooks/RefreshMonitor.py
             base_parameters:

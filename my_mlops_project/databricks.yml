@@ -24,6 +24,9 @@ variables:
   prediction_column:
     description: Prediction column
     default: prediction
+  cluster_id:
+    description: Cluster ID
+    default: 0201-153150-3mcdiz2x
   #Add regression, predict column, label column as variables TODO
 
 include:

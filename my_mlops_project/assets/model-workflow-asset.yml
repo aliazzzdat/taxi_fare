@@ -17,7 +17,7 @@ resources:
       name: ${bundle.target}-my-mlops-project-model-training-job
       job_clusters:
         - job_cluster_key: model_training_job_cluster
-          <<: *new_cluster
+          existing_cluster_id: ${var.cluster_id} #<<: *new_cluster
       tasks:
         - task_key: Train
           job_cluster_key: model_training_job_cluster

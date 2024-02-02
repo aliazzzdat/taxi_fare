@@ -17,7 +17,7 @@ resources:
       name: ${bundle.target}-my-mlops-project-batch-inference-job
       tasks:
         - task_key: batch_inference_job_baseline
-          <<: *new_cluster
+          existing_cluster_id: ${var.cluster_id} #<<: *new_cluster
           notebook_task:
             notebook_path: ../deployment/batch_inference/notebooks/BatchInference.py
             base_parameters:
@@ -28,7 +28,7 @@ resources:
               # git source information of current ML asset deployment. It will be persisted as part of the workflow run
               git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
         - task_key: batch_inference_job_inference
-          <<: *new_cluster
+          existing_cluster_id: ${var.cluster_id} #<<: *new_cluster
           notebook_task:
             notebook_path: ../deployment/batch_inference/notebooks/BatchInference.py
             base_parameters:
@@ -39,7 +39,7 @@ resources:
               # git source information of current ML asset deployment. It will be persisted as part of the workflow run
               git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
         - task_key: real_time_inference_job
-          <<: *new_cluster
+          existing_cluster_id: ${var.cluster_id} #<<: *new_cluster
           notebook_task:
             notebook_path: ../deployment/real_time_inference/notebooks/RealTimeInference.py
             base_parameters:
