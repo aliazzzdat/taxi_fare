@@ -32,18 +32,18 @@ dbutils.library.restartPython()
 
 dbutils.widgets.text(
     "inference_table_name",
-    "dev.my-mlops-project.inference_table",
+    "ali_azzouz.mlops_dev.inference_table",
     label="Inference Table",
 )
 
 dbutils.widgets.text(
     "baseline_table_name",
-    "dev.my-mlops-project.baseline_table",
+    "ali_azzouz.mlops_dev.baseline_table",
     label="Baseline Table",
 )
 
 dbutils.widgets.text(
-    "model_name", "dev.my-mlops-project.my-mlops-project-model", label="Full (Three-Level) Model Name"
+    "model_name", "ali_azzouz.mlops_dev.my-mlops-project-model", label="Full (Three-Level) Model Name"
 )
 
 dbutils.widgets.text(
@@ -66,6 +66,8 @@ dbutils.widgets.text(
     "output_schema_name", "catalog.schema", label="Output schema name"
 )
 
+# COMMAND ----------
+
 #unique_suffix = "_".join([username_prefixes[0], username_prefixes[1][0:2]])
 TABLE_NAME = dbutils.widgets.get("inference_table_name")
 BASELINE_TABLE = dbutils.widgets.get("baseline_table_name")
@@ -75,23 +77,6 @@ MODEL_ID_COL = dbutils.widgets.get("model_id_col")
 PREDICTION_COL = dbutils.widgets.get("prediction_col")
 LABEL_COL = dbutils.widgets.get("label_col")
 OUTPUT_SCHEMA_NAME = dbutils.widgets.get("output_schema_name")
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ## 4. Generate predictions on incoming scoring data
-# MAGIC
-# MAGIC ### Example pre-processing step
-# MAGIC - Extract ground-truth labels (in practice, labels might arrive later)
-# MAGIC - Split into two batches
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ## 5. Create the monitor
-# MAGIC Use `InferenceLog` type analysis.
-# MAGIC
-# MAGIC **Make sure to drop any column that you don't want to track or which doesn't make sense from a business or use-case perspective**, otherwise create a VIEW with only columns of interest and monitor it.
 
 # COMMAND ----------
 

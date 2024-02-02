@@ -3,7 +3,7 @@
 
 dbutils.widgets.text(
     "inference_table_name",
-    "dev.my-mlops-project.inference_table",
+    "ali_azzouz.mlops_dev.inference_table",
     label="Inference Table",
 )
 

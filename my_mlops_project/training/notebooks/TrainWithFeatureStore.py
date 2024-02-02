@@ -58,53 +58,53 @@ dbutils.widgets.text(
 )
 # Unity Catalog registered model name to use for the trained mode.
 dbutils.widgets.text(
-    "model_name", "dev.my-mlops-project.my-mlops-project-model", label="Full (Three-Level) Model Name"
+    "model_name", "ali_azzouz.mlops_dev.my-mlops-project-model", label="Full (Three-Level) Model Name"
 )
 
 # Raw table name
 dbutils.widgets.text(
     "raw_data_table",
-    "dev.my-mlops-project.raw_data",
+    "ali_azzouz.mlops_dev.raw_data",
     label="Raw data table",
 )
 
 # Pickup features table name
 dbutils.widgets.text(
     "pickup_features_table",
-    "dev.my-mlops-project.trip_pickup_features",
+    "ali_azzouz.mlops_dev.trip_pickup_features",
     label="Pickup Features Table",
 )
 
 # Dropoff features table name
 dbutils.widgets.text(
     "dropoff_features_table",
-    "dev.my-mlops-project.trip_dropoff_features",
+    "ali_azzouz.mlops_dev.trip_dropoff_features",
     label="Dropoff Features Table",
 )
 
 # Dataset table name
 #dbutils.widgets.text(
 #    "dataset",
-#    "dev.my-mlops-project.dataset",
+#    "ali_azzouz.mlops_dev.dataset",
 #    label="Dataset Table",
 #)
 
 # Training set table name
 dbutils.widgets.text(
     "training_table",
-    "dev.my-mlops-project.training_table",
+    "ali_azzouz.mlops_dev.training_table",
     label="Training Table",
 )
 
 dbutils.widgets.text(
     "baseline_table",
-    "dev.my-mlops-project.baseline_table",
+    "ali_azzouz.mlops_dev.baseline_table",
     label="Baseline Table",
 )
 
 dbutils.widgets.text(
     "inference_table",
-    "dev.my-mlops-project.inference_table",
+    "ali_azzouz.mlops_dev.inference_table",
     label="Inference Table",
 )
 

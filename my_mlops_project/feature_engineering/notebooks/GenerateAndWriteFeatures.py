@@ -45,7 +45,7 @@ dbutils.widgets.text(
 # Feature table to store the computed features.
 dbutils.widgets.text(
     "output_table_name",
-    "dev.my-mlops-project.trip_pickup_features",
+    "ali_azzouz.mlops_dev.trip_pickup_features",
     label="Output Feature Table Name",
 )
 

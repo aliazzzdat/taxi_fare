@@ -14,7 +14,7 @@ dbutils.widgets.dropdown("env", "dev", ["dev", "staging", "prod"], "Environment 
 dbutils.widgets.text("output_table_name", "", label="Output Table Name")
 # Unity Catalog registered model name to use for the trained mode.
 dbutils.widgets.text(
-    "model_name", "dev.my-mlops-project.my-mlops-project-model", label="Full (Three-Level) Model Name"
+    "model_name", "ali_azzouz.mlops_dev.my-mlops-project-model", label="Full (Three-Level) Model Name"
 )
 
 # COMMAND ----------

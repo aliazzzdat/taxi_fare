@@ -32,29 +32,14 @@ dbutils.library.restartPython()
 
 dbutils.widgets.text(
     "inference_table_name",
-    "dev.my-mlops-project.inference_table",
+    "ali_azzouz.mlops_dev.inference_table",
     label="Inference Table",
 )
 
+# COMMAND ----------
+
 #unique_suffix = "_".join([username_prefixes[0], username_prefixes[1][0:2]])
 TABLE_NAME = dbutils.widgets.get("inference_table_name")
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ## 4. Generate predictions on incoming scoring data
-# MAGIC
-# MAGIC ### Example pre-processing step
-# MAGIC - Extract ground-truth labels (in practice, labels might arrive later)
-# MAGIC - Split into two batches
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ## 5. Create the monitor
-# MAGIC Use `InferenceLog` type analysis.
-# MAGIC
-# MAGIC **Make sure to drop any column that you don't want to track or which doesn't make sense from a business or use-case perspective**, otherwise create a VIEW with only columns of interest and monitor it.
 
 # COMMAND ----------
 

@@ -3,13 +3,13 @@
 
 dbutils.widgets.text(
     "inference_table_todrift",
-    "dev.my-mlops-project.inference_table_todrift",
+    "ali_azzouz.mlops_dev.inference_table_todrift",
     label="Inference Table to drift",
 )
 
 dbutils.widgets.text(
     "inference_table_drifted",
-    "dev.my-mlops-project.inference_table_drifted",
+    "ali_azzouz.mlops_dev.inference_table_drifted",
     label="Drifted Inference Table",
 )
 
