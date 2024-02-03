@@ -9,8 +9,6 @@ dbutils.widgets.text(
 
 
 # COMMAND ----------
-import os
-import time
 assert float(os.environ.get("DATABRICKS_RUNTIME_VERSION", 0)) >= 12.2 and os.environ.get("MLR_PYTHONPATH", None) is not None, "Please configure your cluster to use Databricks Runtime 12.2 LTS ML or above. The ML runtime is required."
 
 # COMMAND ----------
@@ -25,6 +23,8 @@ dbutils.library.restartPython()
 
 # COMMAND ----------
 
+import os
+import time
 import databricks.lakehouse_monitoring as lm
 
 # COMMAND ----------

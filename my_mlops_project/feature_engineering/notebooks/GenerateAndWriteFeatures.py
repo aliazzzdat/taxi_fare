@@ -22,6 +22,7 @@
 # * features_transform_module (required) - Python module containing the feature transform logic.
 ##################################################################################
 
+# COMMAND ----------
 
 # List of input args needed to run this notebook as a job.
 # Provide them via DB widgets or notebook arguments.
