@@ -106,12 +106,14 @@ SLICING_EXPRS = []  # Expressions to slice data with
 # Check if monitor already in place if yes the delete
 try:
   lm.get_monitor(table_name=TABLE_NAME)
+  print("Monitoring exist")
   MONITOR_EXISTS = True
   if RESET_MONITORING == "reset":
     lm.delete_monitor(table_name=TABLE_NAME)
     spark.sql(f"DROP TABLE IF EXISTS {TABLE_NAME}_drift_metrics") 
     spark.sql(f"DROP TABLE IF EXISTS {TABLE_NAME}_profile_metrics") 
     MONITOR_EXISTS = False
+    print("Monitoring and tables has been deleted")
 except:
   print("Tables or monitoring don't exist")
   MONITOR_EXISTS = False
