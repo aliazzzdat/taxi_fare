@@ -66,6 +66,9 @@ dbutils.widgets.text(
     "output_schema_name", "catalog.schema", label="Output schema name"
 )
 
+dbutils.widgets.dropdown("reset_monitoring", "reset", ["reset", "no_reset"], "Reset monitoring")
+
+
 # COMMAND ----------
 
 #unique_suffix = "_".join([username_prefixes[0], username_prefixes[1][0:2]])
@@ -77,6 +80,7 @@ MODEL_ID_COL = dbutils.widgets.get("model_id_col")
 PREDICTION_COL = dbutils.widgets.get("prediction_col")
 LABEL_COL = dbutils.widgets.get("label_col")
 OUTPUT_SCHEMA_NAME = dbutils.widgets.get("output_schema_name")
+RESET_MONITORING = dbutils.widgets.get("reset_monitoring")
 
 # COMMAND ----------
 
@@ -102,56 +106,66 @@ SLICING_EXPRS = []  # Expressions to slice data with
 # Check if monitor already in place if yes the delete
 try:
   lm.get_monitor(table_name=TABLE_NAME)
-  lm.delete_monitor(table_name=TABLE_NAME)
-  spark.sql(f"DROP TABLE IF EXISTS {TABLE_NAME}_drift_metrics") 
-  spark.sql(f"DROP TABLE IF EXISTS {TABLE_NAME}_profile_metrics") 
+  MONITOR_EXISTS = True
+  if RESET_MONITORING == "reset":
+    lm.delete_monitor(table_name=TABLE_NAME)
+    spark.sql(f"DROP TABLE IF EXISTS {TABLE_NAME}_drift_metrics") 
+    spark.sql(f"DROP TABLE IF EXISTS {TABLE_NAME}_profile_metrics") 
+    MONITOR_EXISTS = False
 except:
   print("Tables or monitoring don't exist")
+  MONITOR_EXISTS = False
 
 # COMMAND ----------
 
 # DBTITLE 1,Create Monitor
-print(f"Creating monitor for {TABLE_NAME}")
+  
+if not MONITOR_EXISTS:
+  print(f"Creating monitor for {TABLE_NAME}")
 
-info = lm.create_monitor(
-  table_name=TABLE_NAME,
-  profile_type=lm.InferenceLog(
-    granularities=GRANULARITIES,
-    timestamp_col=TIMESTAMP_COL,
-    model_id_col=MODEL_ID_COL, # Model version number 
-    prediction_col=PREDICTION_COL,
-    problem_type=PROBLEM_TYPE,
-    label_col=LABEL_COL # Optional
-  ),
-  baseline_table_name=BASELINE_TABLE,
-  slicing_exprs=SLICING_EXPRS,
-  output_schema_name=OUTPUT_SCHEMA_NAME
-)
+  info = lm.create_monitor(
+    table_name=TABLE_NAME,
+    profile_type=lm.InferenceLog(
+      granularities=GRANULARITIES,
+      timestamp_col=TIMESTAMP_COL,
+      model_id_col=MODEL_ID_COL, # Model version number 
+      prediction_col=PREDICTION_COL,
+      problem_type=PROBLEM_TYPE,
+      label_col=LABEL_COL # Optional
+    ),
+    baseline_table_name=BASELINE_TABLE,
+    slicing_exprs=SLICING_EXPRS,
+    output_schema_name=OUTPUT_SCHEMA_NAME
+  )
 
 # COMMAND ----------
 
 import time
 
-
-# Wait for monitor to be created
-while info.status == lm.MonitorStatus.PENDING:
-  info = lm.get_monitor(table_name=TABLE_NAME)
-  time.sleep(10)
-    
-assert(info.status == lm.MonitorStatus.ACTIVE)
+if not MONITOR_EXISTS:
+  # Wait for monitor to be created
+  while info.status == lm.MonitorStatus.PENDING:
+    info = lm.get_monitor(table_name=TABLE_NAME)
+    time.sleep(10)
+      
+  assert(info.status == lm.MonitorStatus.ACTIVE)
 
 # COMMAND ----------
 
-# A metric refresh will automatically be triggered on creation
-refreshes = lm.list_refreshes(table_name=TABLE_NAME)
-assert(len(refreshes) > 0)
+if not MONITOR_EXISTS:
+  # A metric refresh will automatically be triggered on creation
+  refreshes = lm.list_refreshes(table_name=TABLE_NAME)
+  assert(len(refreshes) > 0)
+  run_info = refreshes[0]
+else:
+  run_info = lm.run_refresh(table_name=TABLE_NAME)
 
-run_info = refreshes[0]
 while run_info.state in (lm.RefreshState.PENDING, lm.RefreshState.RUNNING):
   run_info = lm.get_refresh(table_name=TABLE_NAME, refresh_id=run_info.refresh_id)
   time.sleep(30)
 
 assert(run_info.state == lm.RefreshState.SUCCESS)
+
 
 # COMMAND ----------
 

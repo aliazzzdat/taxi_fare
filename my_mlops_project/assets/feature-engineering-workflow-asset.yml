@@ -15,6 +15,7 @@ resources:
   jobs:
     write_feature_table_job:
       name: ${bundle.target}-my-mlops-project-write-feature-table-job
+      max_concurrent_runs: 3
      #job_clusters:
      #   - job_cluster_key: write_feature_table_job_cluster
      #     existing_cluster_id: ${var.cluster_id} #<<: *new_cluster

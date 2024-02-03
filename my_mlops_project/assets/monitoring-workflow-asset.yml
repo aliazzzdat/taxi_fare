@@ -16,6 +16,7 @@ resources:
   jobs:
     monitoring_job:
       name: ${bundle.target}-my-mlops-project-monitoring-job
+      max_concurrent_runs: 3
       tasks:
         - task_key: create_monitoring
           existing_cluster_id: ${var.cluster_id} #<<: *new_cluster
@@ -31,6 +32,7 @@ resources:
               prediction_col: ${var.prediction_column}
               label_col: ${var.label_column}
               output_schema_name: ${var.catalog_name}.${var.schema_name}${bundle.target}
+              reset_monitoring: no_reset
               # git source information of current ML asset deployment. It will be persisted as part of the workflow run
               git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
         - task_key: simulate_drift

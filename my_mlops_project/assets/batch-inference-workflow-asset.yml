@@ -15,6 +15,7 @@ resources:
   jobs:
     batch_inference_job:
       name: ${bundle.target}-my-mlops-project-batch-inference-job
+      max_concurrent_runs: 3
       tasks:
         - task_key: batch_inference_job_baseline
           existing_cluster_id: ${var.cluster_id} #<<: *new_cluster
