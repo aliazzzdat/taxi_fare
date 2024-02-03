@@ -66,7 +66,7 @@ dbutils.widgets.text(
     "output_schema_name", "catalog.schema", label="Output schema name"
 )
 
-dbutils.widgets.dropdown("reset_monitoring", "reset", ["reset", "no_reset"], "Reset monitoring")
+dbutils.widgets.dropdown("reset_monitoring", "no_reset", ["reset", "no_reset"], "Reset monitoring")
 
 
 # COMMAND ----------
