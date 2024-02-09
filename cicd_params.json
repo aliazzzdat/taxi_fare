@@ -1,0 +1,9 @@
+{
+  "input_root_dir": "my_mlops_project",
+  "input_cloud": "aws",
+  "input_cicd_platform": "azure_devops",
+  "input_default_branch": "main",
+  "input_release_branch": "release",
+  "cloud_specific_node_type_id": "v0.212.2",
+  "input_cli_version": "v0.212.2"
+}
