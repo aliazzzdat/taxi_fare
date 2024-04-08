@@ -42,7 +42,7 @@ dbutils.widgets.text(
 TABLE_NAME = dbutils.widgets.get("inference_table_name")
 
 # COMMAND ----------
-
+import os
 import databricks.lakehouse_monitoring as lm
 
 # COMMAND ----------
