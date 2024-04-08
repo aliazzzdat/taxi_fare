@@ -14,7 +14,7 @@ common_permissions: &permissions
 resources:
   jobs:
     write_feature_table_job:
-      name: [${bundle.target}] [${bundle.name}] feature-engineering-job
+      name: "[${bundle.target}] [${bundle.name}] feature-engineering-job"
       max_concurrent_runs: 3
      #job_clusters:
      #   - job_cluster_key: write_feature_table_job_cluster

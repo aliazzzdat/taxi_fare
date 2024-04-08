@@ -14,7 +14,7 @@ common_permissions: &permissions
 resources:
   jobs:
     batch_inference_job:
-      name: [${bundle.target}] [${bundle.name}] batch-inference-job
+      name: "[${bundle.target}] [${bundle.name}] batch-inference-job"
       max_concurrent_runs: 3
       tasks:
         - task_key: batch_inference_job_baseline

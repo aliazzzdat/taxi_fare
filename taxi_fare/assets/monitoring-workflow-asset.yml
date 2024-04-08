@@ -15,7 +15,7 @@ common_permissions: &permissions
 resources:
   jobs:
     monitoring_job:
-      name: [${bundle.target}] [${bundle.name}] monitoring-job
+      name: "[${bundle.target}] [${bundle.name}] monitoring-job"
       max_concurrent_runs: 3
       tasks:
         - task_key: create_monitoring

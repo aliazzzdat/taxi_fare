@@ -14,7 +14,7 @@ common_permissions: &permissions
 resources:
   jobs:
     model_training_job:
-      name: [${bundle.target}] [${bundle.name}] model-training-job
+      name: "[${bundle.target}] [${bundle.name}] model-training-job"
       max_concurrent_runs: 3
       #job_clusters:
       #  - job_cluster_key: model_training_job_cluster
