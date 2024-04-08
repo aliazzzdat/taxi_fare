@@ -1,0 +1,93 @@
+# This GitHub workflow validates Bundle config (ML asset config and more)
+# defined under taxi_fare/assets/*
+# and taxi_fare/databricks.yml, when PRs are merged into the main branch
+name: Bundle validation for taxi-fare
+
+on:
+  workflow_dispatch:
+  pull_request_target:
+
+defaults:
+  run:
+    working-directory: ./taxi_fare/
+
+env:
+  STAGING_WORKSPACE_TOKEN: ${{ secrets.STAGING_WORKSPACE_TOKEN }}
+  PROD_WORKSPACE_TOKEN: ${{ secrets.PROD_WORKSPACE_TOKEN }}
+
+jobs:
+  staging:
+    concurrency: taxi-fare-staging-bundle-job
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: databricks/setup-cli@v0.211.0
+      - name: Validate Bundle For Staging
+        id: validate
+        env:
+          DATABRICKS_TOKEN: ${{ env.STAGING_WORKSPACE_TOKEN }}
+        run: |
+          databricks bundle validate -t stg > ../validate_output.txt
+      - name: Create Comment with Bundle Configuration
+        uses: actions/github-script@v6
+        id: comment
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const fileContents = fs.readFileSync('validate_output.txt', 'utf8');
+            const output = `#### Bundle Staging Config Validated 🖌
+            <details><summary>Staging Validation Output</summary>
+
+            \`\`\`\n
+            ${fileContents}
+            \`\`\`
+
+            </details>`
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
+
+  prod:
+    concurrency: taxi-fare-prod-bundle-job
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: databricks/setup-cli@v0.211.0
+      - name: Validate Bundle For Prod
+        id: validate
+        env:
+          DATABRICKS_TOKEN: ${{ env.PROD_WORKSPACE_TOKEN }}
+        run: |
+          databricks bundle validate -t prd > ../validate_output.txt
+      - name: Create Comment with Bundle Configuration
+        uses: actions/github-script@v6
+        id: comment
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const fileContents = fs.readFileSync('validate_output.txt', 'utf8');
+            const output = `#### Bundle Prod Config Validated 🖌
+            <details><summary>Prod Validation Output</summary>
+
+            \`\`\`\n
+            ${fileContents}
+            \`\`\`
+
+            </details>`
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })

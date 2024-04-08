@@ -1,5 +1,5 @@
 {
-  "input_root_dir": "my_mlops_project",
+  "input_root_dir": "taxi_fare",
   "input_cloud": "aws",
   "input_cicd_platform": "azure_devops",
   "input_default_branch": "main",

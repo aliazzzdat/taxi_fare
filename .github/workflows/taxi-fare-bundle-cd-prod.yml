@@ -1,0 +1,34 @@
+# This GitHub workflow deploys Bundle assets (ML asset config and more)
+# defined under taxi_fare/assets/*
+# and taxi_fare/databricks.yml with prod deployment target configs,
+# when PRs are merged into the release branch
+name: Bundle Deployment for taxi-fare Prod
+
+on:
+  push:
+    branches:
+      - 'release'
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: ./taxi_fare
+
+env:
+  DATABRICKS_TOKEN: ${{ secrets.PROD_WORKSPACE_TOKEN }}
+
+jobs:
+  prod:
+    concurrency: taxi-fare-prod-bundle-job
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: databricks/setup-cli@v0.211.0
+      - name: Validate Bundle For Prod
+        id: validate
+        run: |
+          databricks bundle validate -t prd
+      - name: Deploy Bundle to Prod
+        id: deploy
+        run: |
+          databricks bundle deploy -t prd

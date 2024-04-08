@@ -15,7 +15,7 @@ This page explains how to productionize the current project, setting up CI/CD an
 ML asset deployment, and deploying ML training and inference jobs.
 
 After following this guide, data scientists can follow the [ML Pull Request](ml-pull-request.md) and
-[ML Config](../my_mlops_project/assets/README.md)  guides to make changes to ML code or deployed jobs.
+[ML Config](../taxi_fare/assets/README.md)  guides to make changes to ML code or deployed jobs.
 
 ## Create a hosted Git repo
 Create a hosted Git repo to store project code, if you haven't already done so. From within the project
@@ -30,7 +30,7 @@ git remote add upstream <hosted-git-repo-url>
 
 Commit the current `README.md` file and other docs to the `main` branch of the repo, to enable forking the repo:
 ```
-git add README.md docs .gitignore my_mlops_project/assets/README.md
+git add README.md docs .gitignore taxi_fare/assets/README.md
 git commit -m "Adding project README"
 git push upstream main
 ```
@@ -60,8 +60,8 @@ For your convenience, we also have a [Terraform module](https://registry.terrafo
 #### Configure Service Principal (SP) permissions 
 If the created project uses **Unity Catalog**, we expect a catalog to exist with the name of the deployment target by default. 
 For example, if the deployment target is dev, we expect a catalog named dev to exist in the workspace. 
-If you want to use different catalog names, please update the targets declared in the [my-mlops-project/databricks.yml](../my_mlops_project/databricks.yml)
-and [my-mlops-project/assets/ml-artifacts-asset.yml](../my_mlops_project/assets/ml-artifacts-asset.yml)
+If you want to use different catalog names, please update the targets declared in the [taxi-fare/databricks.yml](../taxi_fare/databricks.yml)
+and [taxi-fare/assets/ml-artifacts-asset.yml](../taxi_fare/assets/ml-artifacts-asset.yml)
  files. 
 If changing the staging, prod, or test deployment targets, you'll need to update the workflows located in the .github/workflows directory.
 
@@ -129,11 +129,11 @@ Your production jobs (model training, batch inference) will pull ML code against
 
 For future ML code changes, iterate against the `main` branch and regularly deploy your ML code from staging to production by merging code changes from the `main` branch into the `release` branch.
 ## Deploy ML assets and enable production jobs
-Follow the instructions in [my-mlops-project/assets/README.md](../my_mlops_project/assets/README.md) to deploy ML assets
+Follow the instructions in [taxi-fare/assets/README.md](../taxi_fare/assets/README.md) to deploy ML assets
 and production jobs.
 
 ## Next steps
 After you configure CI/CD and deploy training & inference pipelines, notify data scientists working
 on the current project. They should now be able to follow the
-[ML pull request guide](ml-pull-request.md) and [ML asset config guide](../my_mlops_project/assets/README.md)  to propose, test, and deploy
+[ML pull request guide](ml-pull-request.md) and [ML asset config guide](../taxi_fare/assets/README.md)  to propose, test, and deploy
 ML code and pipeline changes to production.

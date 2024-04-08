@@ -31,7 +31,7 @@ of the Git repo. Support for running tests against pull requests from repo forks
 is planned for the future.
 
 ## Viewing test status and debug logs
-Opening a pull request will trigger a[workflow](../.github/workflows/my-mlops-project-run-tests-fs.yml) 
+Opening a pull request will trigger a[workflow](../.github/workflows/taxi-fare-run-tests-fs.yml) 
 that runs unit and integration tests for the feature engineering and model training pipeline on Databricks against a test dataset.
 You can view test status and debug logs from the pull request UI, and push new commits to your pull request branch
 to address any test failures.
@@ -55,8 +55,8 @@ After merging your pull request, subsequent runs of the model training and batch
 jobs in staging and production will automatically use your updated ML code.
 
 You can track the state of the ML pipelines for the current project from the MLflow registered model UI. Links:
-* [Staging model in UC](https://e2-demo-field-eng.cloud.databricks.com/explore/data/models/staging/my-mlops-project/my-mlops-project-model)
-* [Prod model in UC](https://e2-demo-field-eng.cloud.databricks.com/explore/data/models/prod/my-mlops-project/my-mlops-project-model)
+* [Staging model in UC](https://e2-demo-field-eng.cloud.databricks.com/explore/data/models/staging/taxi-fare/taxi-fare-model)
+* [Prod model in UC](https://e2-demo-field-eng.cloud.databricks.com/explore/data/models/prod/taxi-fare/taxi-fare-model)
 . 
 
 In both the staging and prod workspaces, the MLflow registered model contains links to:

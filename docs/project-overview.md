@@ -24,9 +24,9 @@ This project contains the following components:
 contained in the following files:
 
 ```
-my-mlops-project        <- Root directory. Both monorepo and polyrepo are supported.
+taxi-fare        <- Root directory. Both monorepo and polyrepo are supported.
 │
-├── my_mlops_project       <- Contains python code, notebooks and ML assets related to one ML project. 
+├── taxi_fare       <- Contains python code, notebooks and ML assets related to one ML project. 
 │   │
 │   ├── requirements.txt        <- Specifies Python dependencies for ML code (for example: model training, batch inference).
 │   │
