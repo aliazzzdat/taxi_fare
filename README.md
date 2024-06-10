@@ -47,7 +47,7 @@ taxi-fare        <- Root directory. Both monorepo and polyrepo are supported.
 │   │   ├── model_deployment    <- As part of CD workflow, deploy the registered model by assigning it the appropriate alias.
 │   │
 │   │
-│   ├── tests                   <- Unit tests for the ML project, including the modules under `features`.
+│   ├── tests                   <- Unit tests & integration test for the ML project, including the modules under `features`.
 │   │
 │   ├── assets               <- ML asset (ML jobs, MLflow models) config definitions expressed as code, across dev/staging/prod/test.
 │       │
