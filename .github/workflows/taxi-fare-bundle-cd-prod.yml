@@ -5,8 +5,11 @@
 name: Bundle Deployment for taxi-fare Prod
 
 on:
+  release:
+    types: [published]
   push:
     branches:
+      - 'releases/**'
       - 'release'
   workflow_dispatch:
 
@@ -23,7 +26,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
-      - uses: databricks/setup-cli@v0.211.0
+      - uses: databricks/setup-cli@main
       - name: Validate Bundle For Prod
         id: validate
         run: |
