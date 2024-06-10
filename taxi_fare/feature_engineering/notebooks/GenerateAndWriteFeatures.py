@@ -61,6 +61,12 @@ dbutils.widgets.text(
     label="Primary keys columns for the feature table, comma separated.",
 )
 
+#dbutils.widgets.text(
+#    "refresh",
+#    "true",
+#    label="Refresh features.",
+#)
+
 # COMMAND ----------
 
 import os
@@ -79,6 +85,7 @@ input_end_date = dbutils.widgets.get("input_end_date")
 ts_column = dbutils.widgets.get("timestamp_column")
 features_module = dbutils.widgets.get("features_transform_module")
 pk_columns = dbutils.widgets.get("primary_keys")
+#refresh = dbutils.widgets.get("refresh")
 
 assert input_table_path != "", "input_table_path notebook parameter must be specified"
 assert output_table_name != "", "output_table_name notebook parameter must be specified"
@@ -90,7 +97,10 @@ output_database = output_table_name.split(".")[1]
 # COMMAND ----------
 # DBTITLE 1,Create database.
 
-spark.sql(f"CREATE DATABASE IF NOT EXISTS {output_catalog}.{output_database}")
+#spark.sql(f"CREATE DATABASE IF NOT EXISTS {output_catalog}.{output_database}")
+#it's not necessary as database should exist before deploying model
+#if refresh == "true":
+#    spark.sql(f"DROP SCHEMA IF EXISTS {output_catalog}.{output_database} CASCADE")
 
 # COMMAND ----------
 # DBTITLE 1, Read input data.

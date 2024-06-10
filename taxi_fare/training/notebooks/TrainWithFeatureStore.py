@@ -316,10 +316,16 @@ training_df.display()
 # MAGIC Train a LightGBM model on the data returned by `TrainingSet.to_df`, then log the model with `FeatureStoreClient.log_model`. The model will be packaged with feature metadata.
 
 # COMMAND ----------
+# DBTITLE 1, Load custom function
+import sys
+%cd ..
+sys.path.append("../..")
+
+# COMMAND ----------
 # DBTITLE 1, Train model
 
 #import lightgbm as lgb
-from ..models.lgbm import create_lgbm_model
+from models.lgbm import create_lgbm_model
 from sklearn.model_selection import train_test_split
 import mlflow.lightgbm
 from mlflow.tracking import MlflowClient
@@ -337,7 +343,8 @@ y_train = train.fare_amount
 y_test = test.fare_amount
 
 spark.sql(f"DROP TABLE IF EXISTS {validation_table}") 
-spark.createDataframe(test.drop(["fare_amount"], axis=1)).write.format("delta").mode("overwrite").saveAsTable(f"{validation_table}") 
+validation_df = spark.createDataFrame(test)
+validation_df.write.format("delta").mode("overwrite").saveAsTable(f"{validation_table}") 
 
 mlflow.lightgbm.autolog()
 #train_lgb_dataset = lgb.Dataset(X_train, label=y_train.values)

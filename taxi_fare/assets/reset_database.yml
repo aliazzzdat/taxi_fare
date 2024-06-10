@@ -1,0 +1,35 @@
+#new_cluster: &new_cluster
+#  new_cluster:
+#    num_workers: 3
+#    spark_version: 13.3.x-cpu-ml-scala2.12
+#    node_type_id: i3.xlarge
+#    custom_tags:
+#      clusterSource: mlops-stack/0.2
+
+common_permissions: &permissions
+  permissions:
+    - level: CAN_VIEW
+      group_name: users
+
+resources:
+  jobs:
+    reset_database_job:
+      name: "[${bundle.target}] [${bundle.name}] reset-database-job"
+      max_concurrent_runs: 3
+      tasks:
+        - task_key: reset_database_job
+          existing_cluster_id: ${var.cluster_id} #<<: *new_cluster
+          notebook_task:
+            notebook_path: ../deployment/batch_inference/notebooks/BatchInference.py
+            base_parameters:
+              env: ${bundle.target}
+              schema_name: ${var.catalog_name}.${var.schema_name}${bundle.target}
+              git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
+      <<: *permissions
+      # If you want to turn on notifications for this job, please uncomment the below code,
+      # and provide a list of emails to the on_failure argument.
+      #
+      #  email_notifications:
+      #    on_failure:
+      #      - first@company.com
+      #      - second@company.com
