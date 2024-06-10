@@ -79,11 +79,11 @@ dbutils.widgets.text("model_version", "", "Candidate Model Version")
 
 # COMMAND ----------
 
-print(
-    "Currently model validation is not supported for models registered with feature store. Please refer to "
-    "issue https://github.com/databricks/mlops-stacks/issues/70 for more details."
-)
-dbutils.notebook.exit(0)
+#print(
+#    "Currently model validation is not supported for models registered with feature store. Please refer to "
+#    "issue https://github.com/databricks/mlops-stacks/issues/70 for more details."
+#)
+#dbutils.notebook.exit(0)
 run_mode = dbutils.widgets.get("run_mode").lower()
 assert run_mode == "disabled" or run_mode == "dry_run" or run_mode == "enabled"
 
@@ -144,9 +144,13 @@ enable_baseline_comparison = dbutils.widgets.get("enable_baseline_comparison")
 assert enable_baseline_comparison == "true" or enable_baseline_comparison == "false"
 enable_baseline_comparison = enable_baseline_comparison == "true"
 
+#verify if champion model exist for comparison available
+if not 'Champion' in client.get_registered_model(model_name).aliases:
+    enable_baseline_comparison = False
+
 validation_input = dbutils.widgets.get("validation_input")
 assert validation_input
-data = spark.sql(validation_input)
+data = spark.table(validation_input)
 
 model_type = dbutils.widgets.get("model_type")
 targets = dbutils.widgets.get("targets")
@@ -232,9 +236,27 @@ with mlflow.start_run(
                 )
     mlflow.log_artifact(validation_thresholds_file)
 
+
+    from databricks.feature_store import FeatureStoreClient
+
+    def get_fs_model(data):
+      fs_client = FeatureStoreClient()
+      return fs_client.score_batch(
+        model_uri,
+        spark.createDataFrame(data)
+      ).select('prediction').toPandas()
+    
+    def get_fs_baseline_model(data):
+      fs_client = FeatureStoreClient()
+      return fs_client.score_batch(
+        baseline_model_uri,
+        spark.createDataFrame(data)
+      ).select('prediction').toPandas()
+
     try:
         eval_result = mlflow.evaluate(
-            model=model_uri,
+            #model=model_uri,
+            get_fs_model,
             data=data,
             targets=targets,
             model_type=model_type,
@@ -243,7 +265,7 @@ with mlflow.start_run(
             custom_metrics=custom_metrics,
             baseline_model=None
             if not enable_baseline_comparison
-            else baseline_model_uri,
+            else get_fs_baseline_model,
             evaluator_config=evaluator_config,
         )
         metrics_file = os.path.join(tmp_dir, "metrics.txt")

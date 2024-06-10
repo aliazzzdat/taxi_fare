@@ -97,6 +97,12 @@ dbutils.widgets.text(
 )
 
 dbutils.widgets.text(
+    "validation_table",
+    "ali_azzouz.mlops_dev.validation_table",
+    label="Validation Table",
+)
+
+dbutils.widgets.text(
     "baseline_table",
     "ali_azzouz.mlops_dev.baseline_table",
     label="Baseline Table",
@@ -106,6 +112,18 @@ dbutils.widgets.text(
     "inference_table",
     "ali_azzouz.mlops_dev.inference_table",
     label="Inference Table",
+)
+
+dbutils.widgets.text(
+    "cutoff_date_training",
+    "2016-02-06",
+    label="Cutoff Date Training",
+)
+
+dbutils.widgets.text(
+    "cutoff_date_baseline_inference",
+    "2016-02-18",
+    label="Cutoff Date Baseline and Inference",
 )
 
 # COMMAND ----------
@@ -244,11 +262,21 @@ exclude_columns = ["rounded_pickup_datetime", "rounded_dropoff_datetime"]
 
 #dataset = dbutils.widgets.get("dataset") 
 training_table = dbutils.widgets.get("training_table") 
+validation_table = dbutils.widgets.get("validation_table") 
 baseline_table = dbutils.widgets.get("baseline_table") 
 inference_table = dbutils.widgets.get("inference_table") 
+cutoff_date_training = dbutils.widgets.get("cutoff_date_training") 
+cutoff_date_baseline_inference = dbutils.widgets.get("cutoff_date_baseline_inference") 
 
 #TO DO subsample baseline + inference (scoring1 & scoring2)
-training_df, baseline_df, inference_df = taxi_data.randomSplit(weights=[0.6, 0.2, 0.2], seed=42)
+taxi_data = taxi_data.orderBy("rounded_pickup_datetime")
+#training_df = taxi_data.head(60) .tail
+#Let's take the first 61*0.6=36th days for training 2016-02-06, up to the 61*0.8=49th days 2016-02-18 for baseline, and the rest for the inference
+#cutoff date should be parametrized
+training_df = taxi_data.filter(F.col('rounded_pickup_datetime') < cutoff_date_training)
+baseline_df = taxi_data.filter((F.col('rounded_pickup_datetime') >= cutoff_date_training) & (F.col('rounded_pickup_datetime') < cutoff_date_baseline_inference))
+inference_df = taxi_data.filter(F.col('rounded_pickup_datetime') >= cutoff_date_baseline_inference)
+#training_df, baseline_df, inference_df = taxi_data.randomSplit(weights=[0.6, 0.2, 0.2], seed=42)
 
 spark.sql(f"DROP TABLE IF EXISTS {training_table}") 
 spark.sql(f"DROP TABLE IF EXISTS {baseline_table}") 
@@ -290,7 +318,8 @@ training_df.display()
 # COMMAND ----------
 # DBTITLE 1, Train model
 
-import lightgbm as lgb
+#import lightgbm as lgb
+from ..models.lgbm import create_lgbm_model
 from sklearn.model_selection import train_test_split
 import mlflow.lightgbm
 from mlflow.tracking import MlflowClient
@@ -307,15 +336,19 @@ X_test = test.drop(["fare_amount"], axis=1)
 y_train = train.fare_amount
 y_test = test.fare_amount
 
+spark.sql(f"DROP TABLE IF EXISTS {validation_table}") 
+spark.createDataframe(test.drop(["fare_amount"], axis=1)).write.format("delta").mode("overwrite").saveAsTable(f"{validation_table}") 
+
 mlflow.lightgbm.autolog()
-train_lgb_dataset = lgb.Dataset(X_train, label=y_train.values)
-test_lgb_dataset = lgb.Dataset(X_test, label=y_test.values)
+#train_lgb_dataset = lgb.Dataset(X_train, label=y_train.values)
+#test_lgb_dataset = lgb.Dataset(X_test, label=y_test.values)
 
 param = {"num_leaves": 32, "objective": "regression", "metric": "rmse"}
 num_rounds = 100
 
 # Train a lightGBM model
-model = lgb.train(param, train_lgb_dataset, num_rounds)
+model = create_lgbm_model(X_train, y_train, param, num_rounds)
+#model = lgb.train(param, train_lgb_dataset, num_rounds)
 #TO DO edit model as Pipeline
 
 # COMMAND ----------

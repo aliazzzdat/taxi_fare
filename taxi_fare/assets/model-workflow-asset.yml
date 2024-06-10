@@ -36,8 +36,11 @@ resources:
               dropoff_features_table: ${var.catalog_name}.${var.schema_name}${bundle.target}.trip_dropoff_features
               #dataset: ${var.catalog_name}.${var.schema_name}${bundle.target}.dataset
               training_table: ${var.catalog_name}.${var.schema_name}${bundle.target}.training_table
+              validation_table: ${var.catalog_name}.${var.schema_name}${bundle.target}.validation_table
               baseline_table: ${var.catalog_name}.${var.schema_name}${bundle.target}.baseline_table
               inference_table: ${var.catalog_name}.${var.schema_name}${bundle.target}.inference_table
+              cutoff_date_training:  '2016-02-06'
+              cutoff_date_baseline_inference:  '2016-02-18'
               # git source information of current ML asset deployment. It will be persisted as part of the workflow run
               git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
         - task_key: ModelValidation
@@ -61,10 +64,10 @@ resources:
               # Whether to load the current registered "Production" stage model as baseline.
               # Baseline model is a requirement for relative change and absolute change validation thresholds.
               # TODO: update enable_baseline_comparison
-              enable_baseline_comparison: "false"
+              enable_baseline_comparison: "true"
               # Please refer to data parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
               # TODO: update validation_input
-              validation_input: SELECT * FROM delta.`dbfs:/databricks-datasets/nyctaxi-with-zipcodes/subsampled`
+              validation_input: ${var.catalog_name}.${var.schema_name}${bundle.target}.validation_table
               # A string describing the model type. The model type can be either "regressor" and "classifier".
               # Please refer to model_type parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
               # TODO: update model_type

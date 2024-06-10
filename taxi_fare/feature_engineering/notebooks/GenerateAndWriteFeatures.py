@@ -84,12 +84,13 @@ assert input_table_path != "", "input_table_path notebook parameter must be spec
 assert output_table_name != "", "output_table_name notebook parameter must be specified"
 
 # Extract database name. Needs to be updated for Unity Catalog.
-output_database = output_table_name.split(".")[0]
+output_catalog = output_table_name.split(".")[0]
+output_database = output_table_name.split(".")[1]
 
 # COMMAND ----------
 # DBTITLE 1,Create database.
 
-spark.sql("CREATE DATABASE IF NOT EXISTS " + output_database)
+spark.sql(f"CREATE DATABASE IF NOT EXISTS {output_catalog}.{output_database}")
 
 # COMMAND ----------
 # DBTITLE 1, Read input data.
