@@ -16,7 +16,6 @@ defaults:
 
 env:
   DATABRICKS_TOKEN: ${{ secrets.STAGING_WORKSPACE_TOKEN }}
-  DATABRICKS_HOST: ${{ secrets.STAGING_WORKSPACE }}
 
 jobs:
   staging:
