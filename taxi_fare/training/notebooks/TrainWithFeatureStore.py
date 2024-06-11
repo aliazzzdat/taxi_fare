@@ -283,6 +283,7 @@ spark.sql(f"DROP TABLE IF EXISTS {baseline_table}")
 training_df.write.format("delta").mode("overwrite").saveAsTable(training_table) 
 baseline_df.write.format("delta").mode("overwrite").saveAsTable(baseline_table) 
 #inference_df.write.format("delta").mode("overwrite").saveAsTable(f"{inference_table}_all") 
+keys = training_df.columns
 
 scoring_df1, scoring_df2 = inference_df.randomSplit(weights=[0.5, 0.5], seed=42)
 
@@ -298,7 +299,7 @@ training_set = fs.create_training_set(
     training_df, #taxi_data,
     feature_lookups=pickup_feature_lookups + dropoff_feature_lookups,
     label="fare_amount",
-    exclude_columns=exclude_columns,
+    #exclude_columns=exclude_columns,
 )
 
 # Load the TrainingSet into a dataframe which can be passed into sklearn for training a model
@@ -331,20 +332,22 @@ import mlflow.lightgbm
 from mlflow.tracking import MlflowClient
 
 
-features_and_label = training_df.columns
+#features_and_label = training_df.columns
 
 # Collect data into a Pandas array for training
-data = training_df.toPandas()[features_and_label]
+#data = training_df.toPandas()[features_and_label]
+data = training_df.toPandas()
 
 train, test = train_test_split(data, random_state=123)
-X_train = train.drop(["fare_amount"], axis=1)
-X_test = test.drop(["fare_amount"], axis=1)
-y_train = train.fare_amount
-y_test = test.fare_amount
 
 spark.sql(f"DROP TABLE IF EXISTS {validation_table}") 
-validation_df = spark.createDataFrame(test)
+validation_df = spark.read.table(training_table).join(spark.createDataFrame(test), on=keys, how="inner").select(keys)
 validation_df.write.format("delta").mode("overwrite").saveAsTable(f"{validation_table}") 
+
+X_train = train.drop(["fare_amount"]+exclude_columns, axis=1)
+X_test = test.drop(["fare_amount"]+exclude_columns, axis=1)
+y_train = train.fare_amount
+y_test = test.fare_amount
 
 mlflow.lightgbm.autolog()
 #train_lgb_dataset = lgb.Dataset(X_train, label=y_train.values)

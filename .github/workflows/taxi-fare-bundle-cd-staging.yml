@@ -20,7 +20,8 @@ env:
 jobs:
   staging:
     concurrency: taxi-fare-staging-bundle-job
-    runs-on: ubuntu-22.04
+    #runs-on: ubuntu-22.04
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v3
       - uses: databricks/setup-cli@main
