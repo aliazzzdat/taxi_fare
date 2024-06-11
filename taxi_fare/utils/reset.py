@@ -2,6 +2,12 @@
 # COMMAND ----------
 
 dbutils.widgets.text(
+    "env",
+    "dev",
+    label="Env",
+)
+
+dbutils.widgets.text(
     "schema_name",
     "ali_azzouz.mlops_dev",
     label="Schema Name",
@@ -9,6 +15,7 @@ dbutils.widgets.text(
 
 
 # COMMAND ----------
+env = dbutils.widgets.get("env")
 schema_name = dbutils.widgets.get("schema_name")
 
 # COMMAND ----------

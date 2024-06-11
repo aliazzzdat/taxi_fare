@@ -285,7 +285,10 @@ baseline_df.write.format("delta").mode("overwrite").saveAsTable(baseline_table)
 #inference_df.write.format("delta").mode("overwrite").saveAsTable(f"{inference_table}_all") 
 keys = training_df.columns
 
-scoring_df1, scoring_df2 = inference_df.randomSplit(weights=[0.5, 0.5], seed=42)
+#splitting inference table in two just for demo purpose to simulate some drift
+#scoring_df1, scoring_df2 = inference_df.randomSplit(weights=[0.5, 0.5], seed=42)
+scoring_df1 = inference_df.limit(int(inference_df.count()/2))
+scoring_df2 = inference_df.subtract(scoring_df1)
 
 spark.sql(f"DROP TABLE IF EXISTS {inference_table}") 
 spark.sql(f"DROP TABLE IF EXISTS {inference_table}_todrift") 
@@ -299,11 +302,18 @@ training_set = fs.create_training_set(
     training_df, #taxi_data,
     feature_lookups=pickup_feature_lookups + dropoff_feature_lookups,
     label="fare_amount",
-    #exclude_columns=exclude_columns,
+    exclude_columns=exclude_columns,
 )
 
 # Load the TrainingSet into a dataframe which can be passed into sklearn for training a model
-training_df = training_set.load_df()
+training_fs = training_df.toPandas()
+training_df = training_set.load_df().toPandas()
+features_and_label = training_df.columns
+validation_columns = training_fs.columns
+
+#doing this only for simplifying validation in demo it's not meant to be used in prod
+for c in exclude_columns:
+    training_df[c] = training_fs[c]
 #training_df.write.format("delta").mode("overwrite").saveAsTable(dataset) 
 
 # COMMAND ----------
@@ -331,21 +341,25 @@ from sklearn.model_selection import train_test_split
 import mlflow.lightgbm
 from mlflow.tracking import MlflowClient
 
-
-#features_and_label = training_df.columns
-
 # Collect data into a Pandas array for training
 #data = training_df.toPandas()[features_and_label]
-data = training_df.toPandas()
+#data = training_df[features_and_label]
+#data = training_df.toPandas()
 
-train, test = train_test_split(data, random_state=123)
+#train, test = train_test_split(data, random_state=123)
+train, test = train_test_split(training_df, random_state=123)
 
 spark.sql(f"DROP TABLE IF EXISTS {validation_table}") 
-validation_df = spark.read.table(training_table).join(spark.createDataFrame(test), on=keys, how="inner").select(keys)
+validation_df = spark.createDataFrame(test[validation_columns])
 validation_df.write.format("delta").mode("overwrite").saveAsTable(f"{validation_table}") 
 
-X_train = train.drop(["fare_amount"]+exclude_columns, axis=1)
-X_test = test.drop(["fare_amount"]+exclude_columns, axis=1)
+#train.drop(exclude_columns, axis=1, inplace=True) 
+#test.drop(exclude_columns, axis=1, inplace=True)
+train = train[features_and_label]
+test = test[features_and_label]
+
+X_train = train.drop(["fare_amount"], axis=1)
+X_test = test.drop(["fare_amount"], axis=1)
 y_train = train.fare_amount
 y_test = test.fare_amount
 

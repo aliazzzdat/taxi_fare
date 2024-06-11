@@ -3,7 +3,7 @@
 # Model Validation Notebook
 ##
 # This notebook uses mlflow model validation API to run mode validation after training and registering a model
-# in model registry, before deploying it to the "Champion" alias.
+# in model registry, before deploying it to the "champion" alias.
 #
 # It runs as part of CD and by an automated model training job -> validation -> deployment job defined under ``taxi_fare/assets/model-workflow-asset.yml``
 #
@@ -14,10 +14,10 @@
 # * `run_mode`                              - The `run_mode` defines whether model validation is enabled or not. It can be one of the three values:
 #                                             * `disabled` : Do not run the model validation notebook.
 #                                             * `dry_run`  : Run the model validation notebook. Ignore failed model validation rules and proceed to move
-#                                                            model to the "Champion" alias.
-#                                             * `enabled`  : Run the model validation notebook. Move model to the "Champion" alias only if all model validation
+#                                                            model to the "champion" alias.
+#                                             * `enabled`  : Run the model validation notebook. Move model to the "champion" alias only if all model validation
 #                                                            rules are passing.
-# * enable_baseline_comparison              - Whether to load the current registered "Champion" model as baseline.
+# * enable_baseline_comparison              - Whether to load the current registered "champion" model as baseline.
 #                                             Baseline model is a requirement for relative change and absolute change validation thresholds.
 # * validation_input                        - Validation input. Please refer to data parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
 # * model_type                              - A string describing the model type. The model type can be either "regressor" and "classifier".
@@ -130,7 +130,7 @@ if model_uri == "":
     model_version = dbutils.widgets.get("model_version")
     model_uri = "models:/" + model_name + "/" + model_version
 
-baseline_model_uri = "models:/" + model_name + "@Champion"
+baseline_model_uri = "models:/" + model_name + "@champion"
 
 evaluators = "default"
 assert model_uri != "", "model_uri notebook parameter must be specified"
@@ -145,7 +145,7 @@ assert enable_baseline_comparison == "true" or enable_baseline_comparison == "fa
 enable_baseline_comparison = enable_baseline_comparison == "true"
 
 #verify if champion model exist for comparison available
-if not 'Champion' in client.get_registered_model(model_name).aliases:
+if not 'champion' in client.get_registered_model(model_name).aliases:
     enable_baseline_comparison = False
 
 validation_input = dbutils.widgets.get("validation_input")
@@ -236,6 +236,11 @@ with mlflow.start_run(
                 )
     mlflow.log_artifact(validation_thresholds_file)
 
+###########################################################################################
+# Temporary fix as FS model (with timestamp lookup key) can't predict as pyfunc model     #
+# MLflow evaluate can take a lambda function instead of model uri for model               #
+# but not for baseline model it requires model_uri so setting it to false waiting for fix #
+###########################################################################################
 
     from databricks.feature_store import FeatureStoreClient
 
@@ -246,12 +251,9 @@ with mlflow.start_run(
         spark.createDataFrame(data)
       ).select('prediction').toPandas()
     
-    def get_fs_baseline_model(data):
-      fs_client = FeatureStoreClient()
-      return fs_client.score_batch(
-        baseline_model_uri,
-        spark.createDataFrame(data)
-      ).select('prediction').toPandas()
+    enable_baseline_comparison = False
+
+###########################################################################################
 
     try:
         eval_result = mlflow.evaluate(
@@ -265,7 +267,7 @@ with mlflow.start_run(
             extra_metrics=custom_metrics,
             baseline_model=None
             if not enable_baseline_comparison
-            else get_fs_baseline_model,
+            else baseline_model_uri,
             evaluator_config=evaluator_config,
         )
         metrics_file = os.path.join(tmp_dir, "metrics.txt")
@@ -291,9 +293,9 @@ with mlflow.start_run(
         mlflow.log_artifact(metrics_file)
         log_to_model_description(run, True)
         
-        # Assign "Challenger" alias to indicate model version has passed validation checks
-        print("Validation checks passed. Assigning 'Challenger' alias to model version.")
-        client.set_registered_model_alias(model_name, "Challenger", model_version)
+        # Assign "challenger" alias to indicate model version has passed validation checks
+        print("Validation checks passed. Assigning 'challenger' alias to model version.")
+        client.set_registered_model_alias(model_name, "challenger", model_version)
         
     except Exception as err:
         log_to_model_description(run, False)

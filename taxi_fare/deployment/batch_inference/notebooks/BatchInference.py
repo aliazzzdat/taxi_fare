@@ -67,7 +67,7 @@ model_name = dbutils.widgets.get("model_name")
 assert input_table_name != "", "input_table_name notebook parameter must be specified"
 assert output_table_name != "", "output_table_name notebook parameter must be specified"
 assert model_name != "", "model_name notebook parameter must be specified"
-alias = "Champion"
+alias = "champion"
 model_uri = f"models:/{model_name}@{alias}"
 
 # COMMAND ----------
