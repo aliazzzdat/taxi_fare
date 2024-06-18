@@ -1,1 +1,2 @@
 taxi_fare/.vscode/settings.json
+taxi_fare/tests/unit/*/__pycache__/
