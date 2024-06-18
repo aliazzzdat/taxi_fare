@@ -110,7 +110,7 @@ For example, assuming there's existing repo with root directory name `monorepo_r
 
 1. Add a FeatureFunction (on-demand features with FeatureStore) and Online Store ?
 2. Fix model serving deployment when model uses a feature store (fix from Databricks expected at the beginning of Feb)
-3. Add exploratory notebook analysis ?
+3. Add choice FS model or not FS model 
 4. Add AutoML experiment ? 
 5. Edit modelization and use sklearn pipeline
 6. Add hyperopt experimentation ?

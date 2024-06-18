@@ -292,6 +292,15 @@ with mlflow.start_run(
                 )
         mlflow.log_artifact(metrics_file)
         log_to_model_description(run, True)
+
+        #Business assertion
+        #TODO add as custom metrics
+        #for exemple we don't want the model to produce negative values on validation set
+        validation_res = get_fs_model(data)
+        assert (validation_res['prediction'] >= 0).all(), "There are negative predictions"
+        assert validation_res['prediction'].notnull().all(), "There are null predictions"
+
+
         
         # Assign "challenger" alias to indicate model version has passed validation checks
         print("Validation checks passed. Assigning 'challenger' alias to model version.")

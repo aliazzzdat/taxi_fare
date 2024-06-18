@@ -16,6 +16,8 @@ def predict_batch(
     
     fs_client = FeatureStoreClient()
 
+    #Warning: target column in infrence table for demo purpose and ease of use
+    #though this should not be an issue as score batch will retrieve/return only required column
     prediction_df = fs_client.score_batch(
         model_uri,
         table

@@ -212,6 +212,12 @@ def get_latest_model_version(model_name):
 taxi_data = rounded_taxi_data(raw_data)
 raw_data_table = dbutils.widgets.get("raw_data_table")
 spark.sql(f"DROP TABLE IF EXISTS {raw_data_table}") 
+
+#For demo purpose and for ease of demonstration
+#Preprocess to replace fare amount values inferior to 1
+#Data preprocessing should be taken care in the sklearn pipeline
+taxi_data = taxi_data.withColumn("fare_amount", F.when(F.col("fare_amount") < 1, F.lit(1)).otherwise(F.col("fare_amount")))
+
 taxi_data.write.format("delta").mode("overwrite").saveAsTable(raw_data_table)
 taxi_data.display()
 

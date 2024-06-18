@@ -107,6 +107,12 @@ output_database = output_table_name.split(".")[1]
 
 raw_data = spark.read.format("delta").load(input_table_path)
 
+#For demo purpose and for ease of demonstration
+#Preprocess to replace fare amount values inferior to 1
+#Data preprocessing should be taken care in the sklearn pipeline
+import pyspark.sql.functions as F
+raw_data = raw_data.withColumn("fare_amount", F.when(F.col("fare_amount") < 1, F.lit(1)).otherwise(F.col("fare_amount")))
+
 
 # COMMAND ----------
 # DBTITLE 1,Compute features.
