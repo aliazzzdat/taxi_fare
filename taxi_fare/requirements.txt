@@ -6,4 +6,4 @@ matplotlib>=3.5.2
 Jinja2==3.0.3
 pyspark~=3.3.0
 pytz~=2022.2.1
-lightgbm==4.3.0
+lightgbm>=4.3.0
