@@ -18,6 +18,7 @@ env:
 jobs:
   staging:
     concurrency: taxi-fare-staging-bundle-job
+    permissions: write-all
     #runs-on: ubuntu-22.04
     runs-on: self-hosted
     steps:
@@ -57,6 +58,7 @@ jobs:
 
   prod:
     concurrency: taxi-fare-prod-bundle-job
+    permissions: write-all
     #runs-on: ubuntu-22.04
     runs-on: self-hosted
     steps:

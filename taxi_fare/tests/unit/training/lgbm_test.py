@@ -29,8 +29,8 @@ def spark(request):
 def test_create_lgbm_model(spark):
 
     np.random.seed(42)
-    X_train = np.random.rand(100, 5)  # 100 samples, 5 features
-    y_train = np.random.rand(100) * 10  # Regression target
+    X_train = pd.DataFrame(np.random.rand(100, 5))  # 100 samples, 5 features
+    y_train = pd.DataFrame(np.random.rand(100) * 10)  # Regression target
 
     param = {
         "num_leaves": 32, 
