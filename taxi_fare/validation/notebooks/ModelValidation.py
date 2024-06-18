@@ -296,7 +296,11 @@ with mlflow.start_run(
         #Business assertion
         #TODO add as custom metrics
         #for exemple we don't want the model to produce negative values on validation set
-        validation_res = get_fs_model(data)
+        fs_client = FeatureStoreClient()
+        validation_res = fs_client.score_batch(
+            model_uri,
+            data
+        ).select('prediction').toPandas()
         assert (validation_res['prediction'] >= 0).all(), "There are negative predictions"
         assert validation_res['prediction'].notnull().all(), "There are null predictions"
 
