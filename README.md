@@ -118,3 +118,4 @@ For example, assuming there's existing repo with root directory name `monorepo_r
 8. Create one cluster and use it for all jobs/tasks
 9. Edit CI/CD pipelines
 10. Use MLflow recipe ?
+11. Add job for automatic retraining based on metrics
