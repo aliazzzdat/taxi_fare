@@ -17,14 +17,20 @@ defaults:
   run:
     working-directory: ./taxi_fare
 
-env:
-  DATABRICKS_TOKEN: ${{ secrets.PROD_WORKSPACE_TOKEN }}
+#env:
+#  DATABRICKS_TOKEN: ${{ secrets.PROD_WORKSPACE_TOKEN }}
 
 jobs:
   prod:
     concurrency: taxi-fare-prod-bundle-job
     #runs-on: ubuntu-22.04
     runs-on: self-hosted
+    environment: databricks_prod
+    env:
+      DATABRICKS_TOKEN: ${{secrets.WORKSPACE_TOKEN}}
+      DATABRICKS_HOST: ${{secrets.WORKSPACE_HOST}}
+      #DATABRICKS_CLIENT_ID: ${{secrets.CLIENT_ID}}
+      #DATABRICKS_CLIENT_SECRET: ${{secrets.CLIENT_SECRET}}
     steps:
       - uses: actions/checkout@v3
       - uses: databricks/setup-cli@main

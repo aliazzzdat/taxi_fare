@@ -10,7 +10,7 @@ variables:
     description: Model name for the model training.
     default: taxi-fare-model
   catalog_name:
-    description: Catalog name
+    description: Catalog name #TODO change catalog name
     default: ali_azzouz
   schema_name:
     description: Schema prefix
@@ -27,6 +27,8 @@ variables:
   cluster_id:
     description: Cluster ID
     default: 0327-134238-zpi3rln7
+    #An interactive cluster has been created for the purpose of the demo (to avoid spin up time)
+    #A job cluster should be used in prod to reduce cost, in all .yml files there is a commented line to use a job cluster instead
   #Add regression, predict column, label column as variables TODO
 
 include:

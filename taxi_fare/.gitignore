@@ -1,2 +1,14 @@
+.DS_Store
+.vscode
+.venv
 
-.databricks
+# local bundle files
+**/.databricks/*
+
+*.hcl
+.idea/
+.vscode/
+__pycache__/
+.cache
+*.pyc
+mlops-stacks.iml
