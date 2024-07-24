@@ -119,3 +119,18 @@ For example, assuming there's existing repo with root directory name `monorepo_r
 9. Edit CI/CD pipelines
 10. Use MLflow recipe ?
 11. Add job for automatic retraining based on metrics
+
+## HOW TO RUN THE DEMO
+
+1. Prerequesite : the ci/cd pipeline is correctly set-up (runner is recommended to avoid cost and for ip issues)
+2. Create a new dev branch
+3. Git clone the repo and switch to the new dev branch
+4. Edit some code (for example a param in the training)
+5. Git push and create a pull request to merge the dev branch into the main branch
+6. Notice that the bundle have been deployed in test env, and unit and integrations tests are running
+7. Look in the test workspace if the jobs have succeded
+8. If yes, you can close the pull request
+9. The main branch and the bundle are then deployed in staging
+10. Create a new release branch from the main branch
+11. The release branch and the bundle are then deployed in prod
+12. Please delete the release branch

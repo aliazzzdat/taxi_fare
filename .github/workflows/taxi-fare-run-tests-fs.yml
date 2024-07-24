@@ -9,8 +9,8 @@ defaults:
   run:
     working-directory: ./taxi_fare/
 
-env:
-  DATABRICKS_TOKEN: ${{ secrets.STAGING_WORKSPACE_TOKEN }}
+#env:
+#  DATABRICKS_TOKEN: ${{ secrets.STAGING_WORKSPACE_TOKEN }}
 
 concurrency: taxi-fare-feature-training-integration-test-staging
 
@@ -41,12 +41,18 @@ jobs:
     needs: unit_tests
     #runs-on: ubuntu-22.04
     runs-on: self-hosted
+    environment: databricks_testing
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
       - uses: databricks/setup-cli@main
       - name: Validate Bundle For Test Deployment Target in Staging Workspace
         id: validate
+        env:
+          DATABRICKS_TOKEN: ${{secrets.WORKSPACE_TOKEN}}
+          DATABRICKS_HOST: ${{secrets.WORKSPACE_HOST}}
+          #DATABRICKS_CLIENT_ID: ${{secrets.CLIENT_ID}}
+          #DATABRICKS_CLIENT_SECRET: ${{secrets.CLIENT_SECRET}}
         run: |
           databricks bundle validate -t test
       - name: Deploy Bundle to Test Deployment Target in Staging Workspace

@@ -11,9 +11,9 @@ defaults:
   run:
     working-directory: ./taxi_fare/
 
-env:
-  STAGING_WORKSPACE_TOKEN: ${{ secrets.STAGING_WORKSPACE_TOKEN }}
-  PROD_WORKSPACE_TOKEN: ${{ secrets.PROD_WORKSPACE_TOKEN }}
+#env:
+#  STAGING_WORKSPACE_TOKEN: ${{ secrets.STAGING_WORKSPACE_TOKEN }}
+#  PROD_WORKSPACE_TOKEN: ${{ secrets.PROD_WORKSPACE_TOKEN }}
 
 jobs:
   staging:
@@ -21,6 +21,7 @@ jobs:
     permissions: write-all
     #runs-on: ubuntu-22.04
     runs-on: self-hosted
+    environment: databricks_staging
     steps:
       - uses: actions/checkout@v3
         with:
@@ -29,7 +30,11 @@ jobs:
       - name: Validate Bundle For Staging
         id: validate
         env:
-          DATABRICKS_TOKEN: ${{ env.STAGING_WORKSPACE_TOKEN }}
+          #DATABRICKS_TOKEN: ${{ env.STAGING_WORKSPACE_TOKEN }}
+          DATABRICKS_TOKEN: ${{secrets.WORKSPACE_TOKEN}}
+          DATABRICKS_HOST: ${{secrets.WORKSPACE_HOST}}
+          #DATABRICKS_CLIENT_ID: ${{secrets.CLIENT_ID}}
+          #DATABRICKS_CLIENT_SECRET: ${{secrets.CLIENT_SECRET}}
         run: |
           databricks bundle validate -t stg > ../validate_output.txt
       - name: Create Comment with Bundle Configuration
@@ -61,6 +66,7 @@ jobs:
     permissions: write-all
     #runs-on: ubuntu-22.04
     runs-on: self-hosted
+    environment: databricks_prod
     steps:
       - uses: actions/checkout@v3
         with:
@@ -69,7 +75,11 @@ jobs:
       - name: Validate Bundle For Prod
         id: validate
         env:
-          DATABRICKS_TOKEN: ${{ env.PROD_WORKSPACE_TOKEN }}
+          #DATABRICKS_TOKEN: ${{ env.PROD_WORKSPACE_TOKEN }}
+          DATABRICKS_TOKEN: ${{secrets.WORKSPACE_TOKEN}}
+          DATABRICKS_HOST: ${{secrets.WORKSPACE_HOST}}
+          #DATABRICKS_CLIENT_ID: ${{secrets.CLIENT_ID}}
+          #DATABRICKS_CLIENT_SECRET: ${{secrets.CLIENT_SECRET}}
         run: |
           databricks bundle validate -t prd > ../validate_output.txt
       - name: Create Comment with Bundle Configuration
