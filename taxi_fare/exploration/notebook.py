@@ -84,7 +84,7 @@ df = df.iloc[:10000, :]
 # MAGIC ## Profiling Results
 
 # COMMAND ----------
-
+#new comment
 from ydata_profiling import ProfileReport
 df_profile = ProfileReport(df,
                            correlations={
