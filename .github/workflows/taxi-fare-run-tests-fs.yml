@@ -21,8 +21,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
-        #with:
-        #  python-version: 3.8
+        with:
+          python-version: 3.8
       # Feature store tests bring up a local Spark session, so Java is required.
       - uses: actions/setup-java@main
         with:
