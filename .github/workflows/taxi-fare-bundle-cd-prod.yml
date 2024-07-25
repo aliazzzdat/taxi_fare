@@ -23,8 +23,8 @@ defaults:
 jobs:
   prod:
     concurrency: taxi-fare-prod-bundle-job
-    #runs-on: ubuntu-22.04
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    #runs-on: self-hosted
     environment: databricks_prod
     env:
       DATABRICKS_TOKEN: ${{secrets.WORKSPACE_TOKEN}}

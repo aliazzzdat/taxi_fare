@@ -19,8 +19,8 @@ jobs:
   staging:
     concurrency: taxi-fare-staging-bundle-job
     permissions: write-all
-    #runs-on: ubuntu-22.04
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    #runs-on: self-hosted
     environment: databricks_staging
     steps:
       - uses: actions/checkout@v3
@@ -64,8 +64,8 @@ jobs:
   prod:
     concurrency: taxi-fare-prod-bundle-job
     permissions: write-all
-    #runs-on: ubuntu-22.04
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    #runs-on: self-hosted
     environment: databricks_prod
     steps:
       - uses: actions/checkout@v3
