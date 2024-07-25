@@ -20,8 +20,8 @@ defaults:
 jobs:
   staging:
     concurrency: taxi-fare-staging-bundle-job
-    runs-on: ubuntu-latest
-    #runs-on: self-hosted
+    #runs-on: ubuntu-latest
+    runs-on: self-hosted
     environment: databricks_staging
     env:
       DATABRICKS_TOKEN: ${{secrets.WORKSPACE_TOKEN}}
