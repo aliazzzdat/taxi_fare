@@ -1,0 +1,30 @@
+name: Reset database and bundle for taxi-fare in staging
+on: workflow_dispatch
+defaults:
+  run:
+    working-directory: ./taxi_fare/
+
+concurrency: taxi-fare-reset-database-and-destroy-bundle-staging
+
+jobs:
+  reset-staging:
+    #runs-on: ubuntu-latest
+    runs-on: self-hosted
+    environment: databricks_staging
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+      - uses: databricks/setup-cli@main
+      - name: Run Reset Workflow in Staging Workspace
+        id: reset
+        env:
+          DATABRICKS_TOKEN: ${{secrets.WORKSPACE_TOKEN}}
+          DATABRICKS_HOST: ${{secrets.WORKSPACE_HOST}}
+          #DATABRICKS_CLIENT_ID: ${{secrets.CLIENT_ID}}
+          #DATABRICKS_CLIENT_SECRET: ${{secrets.CLIENT_SECRET}}
+        run: |
+          databricks bundle run reset_database_job -t stg
+      - name: Destroy Bundle in Staging Workspace
+        id: destroy
+        run: |
+          databricks bundle destroy -t stg --auto-approve

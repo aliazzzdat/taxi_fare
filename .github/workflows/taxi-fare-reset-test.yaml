@@ -1,0 +1,30 @@
+name: Reset database and bundle for taxi-fare in testing
+on: workflow_dispatch
+defaults:
+  run:
+    working-directory: ./taxi_fare/
+
+concurrency: taxi-fare-reset-database-and-destroy-bundle-test
+
+jobs:
+  reset-test:
+    #runs-on: ubuntu-latest
+    runs-on: self-hosted
+    environment: databricks_testing
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+      - uses: databricks/setup-cli@main
+      - name: Run Reset Workflow in Testing Workspace
+        id: reset
+        env:
+          DATABRICKS_TOKEN: ${{secrets.WORKSPACE_TOKEN}}
+          DATABRICKS_HOST: ${{secrets.WORKSPACE_HOST}}
+          #DATABRICKS_CLIENT_ID: ${{secrets.CLIENT_ID}}
+          #DATABRICKS_CLIENT_SECRET: ${{secrets.CLIENT_SECRET}}
+        run: |
+          databricks bundle run reset_database_job -t test
+      - name: Destroy Bundle in Testing Workspace
+        id: destroy
+        run: |
+          databricks bundle destroy -t test --auto-approve
